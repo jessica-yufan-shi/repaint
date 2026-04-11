@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "repaint"
+version = "0.1.0"
+description = "Repaint copolymer atom types in LAMMPS datafiles"
+requires-python = ">=3.10"
+dependencies = [
+    "pandas",
+    "numpy",
+    "colorama",
+]
+
+[project.scripts]
+repaint = "repaint.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["repaint*"]
