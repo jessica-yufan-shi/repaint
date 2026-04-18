@@ -7,6 +7,7 @@ from repaint.reader import (
     check_contiguity,
     get_chain_info,
     detect_current_pattern,
+    parse_composition,
     _rle,
 )
 
@@ -58,6 +59,52 @@ def make_dummy_datafile(tmp_path, pattern_types, n_chains=2):
     p = tmp_path / "dummy_data"
     p.write_text(header + "".join(atom_lines) + tail)
     return str(p)
+
+
+# ---------------------------------------------------------------------------
+# parse_composition
+# ---------------------------------------------------------------------------
+
+def test_parse_composition_two_components():
+    result = parse_composition("A:0.4-B:0.6")
+    assert result == [("A", 0.4), ("B", 0.6)]
+
+def test_parse_composition_three_components():
+    result = parse_composition("A:0.2-B:0.5-C:0.3")
+    assert result == [("A", 0.2), ("B", 0.5), ("C", 0.3)]
+
+def test_parse_composition_sums_to_one_float_tolerance():
+    # 0.1 + 0.2 + 0.7 has float representation error but should pass
+    result = parse_composition("A:0.1-B:0.2-C:0.7")
+    assert len(result) == 3
+
+def test_parse_composition_invalid_token_format():
+    with pytest.raises(ValueError, match="Invalid token"):
+        parse_composition("A0.4-B0.6")
+
+def test_parse_composition_lowercase_label():
+    with pytest.raises(ValueError, match="Invalid label"):
+        parse_composition("a:0.4-B:0.6")
+
+def test_parse_composition_multi_char_label():
+    with pytest.raises(ValueError, match="Invalid label"):
+        parse_composition("AB:0.4-C:0.6")
+
+def test_parse_composition_duplicate_label():
+    with pytest.raises(ValueError, match="Duplicate label"):
+        parse_composition("A:0.5-A:0.5")
+
+def test_parse_composition_non_numeric_probability():
+    with pytest.raises(ValueError, match="Invalid probability"):
+        parse_composition("A:half-B:0.5")
+
+def test_parse_composition_zero_probability():
+    with pytest.raises(ValueError, match="greater than 0"):
+        parse_composition("A:0.0-B:1.0")
+
+def test_parse_composition_does_not_sum_to_one():
+    with pytest.raises(ValueError, match="sum to 1.0"):
+        parse_composition("A:0.3-B:0.3")
 
 
 # ---------------------------------------------------------------------------

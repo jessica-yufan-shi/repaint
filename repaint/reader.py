@@ -64,6 +64,60 @@ def _rle(sequence):
     return result
 
 
+def parse_composition(composition_str):
+    """
+    Parse a composition string like "A:0.4-B:0.6" into a list of (label, probability) pairs.
+
+    Returns:
+        list of (label, probability) tuples, e.g. [('A', 0.4), ('B', 0.6)]
+
+    Raises:
+        ValueError with a descriptive message on invalid input.
+    """
+    pairs = []
+    seen_labels = set()
+
+    for token in composition_str.split("-"):
+        parts = token.split(":")
+        if len(parts) != 2:
+            raise ValueError(
+                f"Invalid token '{token}': expected format LETTER:PROBABILITY (e.g. A:0.4)."
+            )
+
+        label, prob_str = parts
+
+        if len(label) != 1 or not label.isalpha() or not label.isupper():
+            raise ValueError(
+                f"Invalid label '{label}': must be a single uppercase letter."
+            )
+
+        if label in seen_labels:
+            raise ValueError(f"Duplicate label '{label}' in composition.")
+        seen_labels.add(label)
+
+        try:
+            prob = float(prob_str)
+        except ValueError:
+            raise ValueError(
+                f"Invalid probability '{prob_str}' for label '{label}': must be a number."
+            )
+
+        if prob <= 0:
+            raise ValueError(
+                f"Probability for label '{label}' must be greater than 0, got {prob}."
+            )
+
+        pairs.append((label, prob))
+
+    total = sum(p for _, p in pairs)
+    if abs(total - 1.0) >= 1e-6:
+        raise ValueError(
+            f"Probabilities must sum to 1.0, but got {total:.6f}."
+        )
+
+    return pairs
+
+
 def detect_current_pattern(df):
     """
     Infer block pattern from the first chain via run-length encoding.

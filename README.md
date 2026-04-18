@@ -19,49 +19,73 @@ Requires Python >= 3.10.
 ## Usage
 
 ```bash
-repaint --file <datafile> --pattern <pattern> --lengths <lengths>
+repaint --file <datafile> [--mode block|random] [mode-specific arguments]
 ```
 
-**Required arguments:**
+**Shared arguments:**
 
 | Argument | Description | Example |
 |---|---|---|
 | `--file` | Path to the input LAMMPS datafile | `sorted_tetrablock_data` |
+| `--mode` | Repainting mode: `block` (default) or `random` | `random` |
+| `--output` | Output file path (default: auto-generated under `results/`) | `my_output` |
+
+**Block mode arguments** (`--mode block`):
+
+| Argument | Description | Example |
+|---|---|---|
 | `--pattern` | Block types separated by `-` | `A-B-A` |
 | `--lengths` | Block lengths separated by `-`, must sum to chain length | `10-60-10` |
 
-**Optional arguments:**
+**Random mode arguments** (`--mode random`):
 
-| Argument | Description |
-|---|---|
-| `--output` | Output file path (default: `results/repainted_<file>_<pattern>_<lengths>`) |
+| Argument | Description | Example |
+|---|---|---|
+| `--composition` | Target fraction for each type, separated by `-` | `A:0.4-B:0.6` |
+| `--seed` | Random seed for reproducibility (required) | `42` |
 
-**Example:**
+**Examples:**
 
 ```bash
+# Block mode (default): convert to A-B-A triblock
 repaint --file sorted_tetrablock_data --pattern A-B-A --lengths 10-60-10
+
+# Random mode: statistical copolymer with 40% A and 60% B
+repaint --file sorted_tetrablock_data --mode random --composition A:0.4-B:0.6 --seed 42
 ```
 
-Before writing any output, the tool displays a side-by-side preview of the current and requested patterns and prompts for confirmation.
+Before writing any output, the tool displays a preview of the current and requested patterns and prompts for confirmation.
 
 ## How it works
 
 1. Reads the LAMMPS datafile and identifies chains by `mol_id`
 2. Detects the existing block pattern from the first chain using run-length encoding
-3. Shows a colored preview comparing the current vs. requested pattern
-4. On confirmation, assigns new atom types based on the requested pattern — mapping letters to integers alphabetically (A→1, B→2, C→3, …)
-5. Writes a new datafile with the updated `Atoms` section; all other sections are copied verbatim
+3. Shows a colored preview comparing the current and requested patterns and prompts for confirmation
+4. On confirmation, assigns new atom types and writes a new datafile with the updated `Atoms` section; all other sections are copied verbatim
 
-All chains are repainted with the same pattern. Coordinates and periodic image flags are unchanged.
+Coordinates and periodic image flags are unchanged.
+
+**Block mode:** every chain gets the same sequence. Letters are mapped to integers alphabetically (A→1, B→2, C→3, …).
+
+**Random mode:** each chain is independently sampled from the target composition using the given seed. This means individual chains will vary around the target fraction — the ensemble statistics are correct but no two chains are identical, which matches the chain-to-chain heterogeneity of real statistical copolymers. The `--seed` flag is required so results are always reproducible.
 
 ## Validation
 
 `repaint` checks for the following before making any changes:
 
+**Block mode:**
 - Input file exists
 - Number of blocks in `--pattern` and `--lengths` match
 - Sum of `--lengths` equals the actual chain length
-- If the new pattern introduces atom types not present in the original file, a warning is displayed (the LAMMPS forcefield will need to be updated separately)
+
+**Random mode:**
+- Input file exists
+- Composition fractions are valid floats greater than 0
+- Composition fractions sum to 1.0
+- No duplicate labels
+
+**Both modes:**
+- If the requested types exceed the number of atom types in the original file, a warning is displayed — the Masses and Pair Coeffs sections in the output file will need to be updated manually before running LAMMPS
 
 ## Input file format
 
