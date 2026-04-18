@@ -155,6 +155,7 @@ def save_composition_histogram(df_repainted, labels, probs, output_path):
         ax.hist(frac, bins=n_bins, color=color, edgecolor='white', alpha=0.85)
         ax.axvline(target, color='black',   linestyle='--', linewidth=1.5, label=f'target {target:.1%}')
         ax.axvline(mean,   color='dimgray', linestyle=':',  linewidth=1.5, label=f'mean {mean:.1%}')
+        ax.set_xlim(0, 1)
         ax.set_xlabel(f'Fraction of {label}')
         ax.set_ylabel('Number of chains')
         ax.set_title(f'{label}  (target {target:.1%}, mean {mean:.1%}, σ {std:.1%})')
