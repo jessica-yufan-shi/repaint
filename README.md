@@ -56,6 +56,14 @@ repaint --file sorted_tetrablock_data --mode random --composition A:0.4-B:0.6 --
 
 Before writing any output, the tool displays a preview of the current and requested patterns and prompts for confirmation.
 
+### Random mode output example
+
+Running random mode on the provided `sorted_tetrablock_data` (6286 chains × 80 monomers, target 40% A / 60% B) produces this per-chain composition histogram saved alongside the output datafile:
+
+![Per-chain composition histogram](examples/random_composition_histogram.png)
+
+The bell curve confirms the ensemble statistics are correct (mean ≈ target) and shows the expected chain-to-chain spread (σ ≈ 5.5%) from the binomial distribution over 80-monomer chains.
+
 ## How it works
 
 1. Reads the LAMMPS datafile and identifies chains by `mol_id`
@@ -108,9 +116,11 @@ repaint/
 │   └── display.py    # Colored confirmation UI
 ├── tests/
 ├── examples/
-│   ├── repaint.ipynb           # Notebook with manual workflow
-│   ├── sorted_tetrablock_data  # Example 80-monomer tetrablock datafile
-│   └── tetrablock_data         # Unsorted variant
+│   ├── repaint.ipynb                    # Notebook with manual workflow
+│   ├── sorted_tetrablock_data           # Example 80-monomer tetrablock datafile
+│   ├── tetrablock_data                  # Unsorted variant
+│   ├── repainted_sorted_tetrablock_data # Example block mode output
+│   └── random_composition_histogram.png # Example random mode histogram output
 └── pyproject.toml
 ```
 
@@ -119,3 +129,4 @@ repaint/
 - [pandas](https://pandas.pydata.org/)
 - [numpy](https://numpy.org/)
 - [colorama](https://pypi.org/project/colorama/)
+- [matplotlib](https://matplotlib.org/)
