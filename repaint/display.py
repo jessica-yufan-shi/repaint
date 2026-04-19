@@ -100,8 +100,8 @@ def show_random_confirmation(
 
 
 _PLOT_COLORS = [
-    'steelblue', 'coral', 'mediumseagreen', 'mediumpurple',
-    'sandybrown', 'lightcoral', 'turquoise', 'khaki',
+    '#8D9EE3', '#E16F6E', '#C6D034',
+    'mediumpurple', 'sandybrown', 'lightcoral', 'turquoise', 'khaki',
 ]
 
 
@@ -152,7 +152,7 @@ def save_composition_histogram(df_repainted, labels, probs, output_path):
         std = variance ** 0.5
 
         color = _PLOT_COLORS[i % len(_PLOT_COLORS)]
-        ax.hist(frac, bins=n_bins, color=color, edgecolor='white', alpha=0.85)
+        ax.hist(frac, bins=n_bins, color=color, edgecolor='none', alpha=0.85)
         ax.axvline(target, color='black',   linestyle='--', linewidth=1.5, label=f'target {target:.1%}')
         ax.axvline(mean,   color='dimgray', linestyle=':',  linewidth=1.5, label=f'mean {mean:.1%}')
         ax.set_xlim(0, 1)
