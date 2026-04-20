@@ -68,20 +68,11 @@ The bell curve confirms the ensemble statistics are correct (mean ≈ target) an
 
 The following visualizations were rendered in [OVITO](https://www.ovito.org/) from repainted LAMMPS datafiles. Each color represents a different monomer type.
 
-**A-B-A triblock** (`--pattern A-B-A --lengths 10-60-10`)
-<img src="Ovito_visualization/A_B_A_10_60_10.png" width="300"/>
+**Block mode** — homopolymer to arbitrarily complex block copolymers:
+![Block visualizations](Ovito_visualization/block_visualization.png)
 
-**A-B-A-B tetrablock** (`--pattern A-B-A-B --lengths 10-20-10-40`)
-<img src="Ovito_visualization/A_B_A_B_10_20_10_40.png" width="300"/>
-
-**A-B-A-C tetrablock** (`--pattern A-B-A-C --lengths 10-40-10-20`)
-<img src="Ovito_visualization/A_B_A_C_10_40_10_20.png" width="300"/>
-
-**8-block copolymer** (`--pattern A-B-C-D-E-F-G-H --lengths 10-10-10-10-10-10-10-10`)
-<img src="Ovito_visualization/A_B_C_D_E_F_G_H_10_10_10_10_10_10_10_10.png" width="300"/>
-
-**Random/statistical copolymer** (`--mode random --composition A:0.4-B:0.6 --seed 42`)
-<img src="Ovito_visualization/Random_.png" width="300"/>
+**Random mode** — statistical copolymers with tunable composition:
+![Random visualizations](Ovito_visualization/random_visualization.png)
 
 ## How it works
 
