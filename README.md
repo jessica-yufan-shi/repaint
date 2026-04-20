@@ -64,6 +64,25 @@ Running random mode on the provided `sorted_tetrablock_data` (6286 chains × 80 
 
 The bell curve confirms the ensemble statistics are correct (mean ≈ target) and shows the expected chain-to-chain spread (σ ≈ 5.5%) from the binomial distribution over 80-monomer chains.
 
+## OVITO Visualizations
+
+The following visualizations were rendered in [OVITO](https://www.ovito.org/) from repainted LAMMPS datafiles. Each color represents a different monomer type.
+
+**A-B-A triblock** (`--pattern A-B-A --lengths 10-60-10`)
+![A-B-A](Ovito_visualization/A_B_A_10_60_10.png)
+
+**A-B-A-B tetrablock** (`--pattern A-B-A-B --lengths 10-20-10-40`)
+![A-B-A-B](Ovito_visualization/A_B_A_B_10_20_10_40.png)
+
+**A-B-A-C tetrablock** (`--pattern A-B-A-C --lengths 10-40-10-20`)
+![A-B-A-C](Ovito_visualization/A_B_A_C_10_40_10_20.png)
+
+**8-block copolymer** (`--pattern A-B-C-D-E-F-G-H --lengths 10-10-10-10-10-10-10-10`)
+![8-block](Ovito_visualization/A_B_C_D_E_F_G_H_10_10_10_10_10_10_10_10.png)
+
+**Random/statistical copolymer** (`--mode random --composition A:0.4-B:0.6 --seed 42`)
+![Random](Ovito_visualization/Random_.png)
+
 ## How it works
 
 1. Reads the LAMMPS datafile and identifies chains by `mol_id`
